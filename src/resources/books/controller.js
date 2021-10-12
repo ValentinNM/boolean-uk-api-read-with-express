@@ -34,23 +34,59 @@ const createOne = async (req, res) => {
   }
 };
 
- function getAllBooks(req, res) {
-  console.log("inisde getAllBooks");
+  function getAllBooks(req, res) { 
+    // console.log("inisde getAllBooks: ", req.body);
+    // res.json({ lemon : true })
+    
+    const getAll = `
+    SELECT *
+    FROM books
+    `;
 
-  // res.json({ data : "works" });
+    // console.log("res: ", res)
 
-  const getAll = `
-  SELECT *
-  FROM books  
-  `;
+    db.query(getAll)
+    .then((result) => res.json({data : result.rows}))
+    .catch(console.error);
+  }
 
-  db.query(getAll)
-  .then(result => res.json({data : result.rows}))
-  .catch(console.error);
 
- }
+  function getBookById (req, res) {
+    // console.log("getBookById res: ", res)
+
+    const idToGet = req.parmas.id;
+
+    const getOneById = `
+    SELECT *
+    FROM books
+    WHERE id = $1;
+    `
+
+    db.query(getOneById, [idToGet])
+    .then((result) => res.json({ data: result.rows[0] }))
+    .catch(console.error);
+}
+
+// const getAllBooks = async (req, res)  => {
+//   console.log("Books Router [READ]", {body: req.body})
+  
+//   const getAllSQL = `
+//   SELECT *
+//   FROM books
+//   `;
+//   try {
+//   const result = await db.query(getAllSQL)
+//   res.json ({data: result.rows})
+//   } catch (error) {
+//       console.error ("[ERROR getAllBooks: ", {error: error.message});
+  
+//       res.status(500).json({ error: error.message });
+//     }
+//   }
 
 
 module.exports = {
-  createOne, getAllBooks
+  createOne
+  , getAllBooks,
+  getBookById
 };

@@ -28,6 +28,22 @@ const createOne = async (req, res) => {
   }
 };
 
+function getAllPets(req, res) { 
+  // console.log("inisde getAllBooks: ", req.body);
+  // res.json({ lemon : true })
+  
+  const getAll = `
+  SELECT *
+  FROM pets
+  `;
+
+  // console.log("res: ", res)
+
+  db.query(getAll)
+  .then((result) => res.json({data : result.rows}))
+  .catch(console.error);
+}
+
 module.exports = {
-  createOne
+  createOne, getAllPets
 };
