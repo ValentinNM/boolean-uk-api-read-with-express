@@ -4,7 +4,7 @@ const createOne = async (req, res) => {
   console.log("Pets Router [CREATE]", { body: req.body });
 
   const petToCreate = {
-    ...req.body
+    ...req.body,
   };
 
   const createOneSQL = `
@@ -28,10 +28,10 @@ const createOne = async (req, res) => {
   }
 };
 
-function getAllPets(req, res) { 
+function getAllPets(req, res) {
   // console.log("inisde getAllBooks: ", req.body);
   // res.json({ lemon : true })
-  
+
   const getAll = `
   SELECT *
   FROM pets
@@ -40,10 +40,11 @@ function getAllPets(req, res) {
   // console.log("res: ", res)
 
   db.query(getAll)
-  .then((result) => res.json({data : result.rows}))
-  .catch(console.error);
+    .then((result) => res.json({ data: result.rows }))
+    .catch(console.error);
 }
 
 module.exports = {
-  createOne, getAllPets
+  createOne,
+  getAllPets,
 };

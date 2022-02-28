@@ -4,7 +4,7 @@ const createOne = async (req, res) => {
   console.log("Books Router [CREATE]", { body: req.body });
 
   const bookToCreate = {
-    ...req.body
+    ...req.body,
   };
 
   const createOneSQL = `
@@ -23,7 +23,7 @@ const createOne = async (req, res) => {
       author,
       type,
       topic,
-      publicationDate
+      publicationDate,
     ]);
 
     res.json({ data: result.rows[0] });
@@ -34,42 +34,42 @@ const createOne = async (req, res) => {
   }
 };
 
-  function getAllBooks(req, res) { 
-    // console.log("inisde getAllBooks: ", req.body);
-    // res.json({ lemon : true })
-    
-    const getAll = `
+function getAllBooks(req, res) {
+  const getAll = `
     SELECT *
     FROM books
+    RETURNING *;
     `;
 
-    // console.log("res: ", res)
-
-    db.query(getAll)
-    .then((result) => res.json({data : result.rows}))
-    .catch(console.error);
-  }
-
-
-  function getBookById (req, res) {
-    // console.log("getBookById res: ", res)
-
-    const idToGet = req.parmas.id;
-
-    const getOneById = `
-    SELECT *
-    FROM books
-    WHERE id = $1;
-    `
-
-    db.query(getOneById, [idToGet])
-    .then((result) => res.json({ data: result.rows[0] }))
+  db.query(getAll)
+    .then((result) => res.json({ data: result.rows }))
     .catch(console.error);
 }
 
+function getBookById(req, res) {
+  // console.log("getBookById res: ", res)
+
+  const bookToGet = {
+    id: req.parmas.id,
+    ...res.body,
+  };
+  console.log("bookToGet: ", bookToGet);
+
+  const getOneById = `
+    SELECT *
+    FROM books
+    WHERE id = $1;
+    `;
+
+  const { id } = bookToGet;
+
+  db.query(getOneById, [id])
+    .then((result) => res.json({ data: result.rows[0] }))
+    .catch(console.error);
+}
 // const getAllBooks = async (req, res)  => {
 //   console.log("Books Router [READ]", {body: req.body})
-  
+
 //   const getAllSQL = `
 //   SELECT *
 //   FROM books
@@ -79,14 +79,12 @@ const createOne = async (req, res) => {
 //   res.json ({data: result.rows})
 //   } catch (error) {
 //       console.error ("[ERROR getAllBooks: ", {error: error.message});
-  
+
 //       res.status(500).json({ error: error.message });
 //     }
-//   }
-
 
 module.exports = {
-  createOne
-  , getAllBooks,
-  getBookById
+  createOne,
+  getAllBooks,
+  getBookById,
 };
